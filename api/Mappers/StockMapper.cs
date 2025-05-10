@@ -12,7 +12,7 @@ namespace api.Mappers
     {
         public static StockDto ToStockDto(this Stock stockModel)
         {
-            return new Dtos.Stock.StockDto
+            return new StockDto
             {
                 Id = stockModel.Id,
                 Symbol = stockModel.Symbol,
