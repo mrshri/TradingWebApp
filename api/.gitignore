@@ -1,1 +1,56 @@
-bin/ 
+echo ## Build results
+echo bin/
+echo obj/
+echo [Bb]uild/
+echo [Ll]og/
+echo TestResults/
+echo *.tmp
+echo *.log
+echo.
+echo ## User-specific files
+echo *.suo
+echo *.user
+echo *.userosscache
+echo *.sln.docstates
+echo.
+echo ## OS generated files
+echo .DS_Store
+echo Thumbs.db
+echo.
+echo ## Visual Studio
+echo .vs/
+echo *.VC.db
+echo *.VC.VC.opendb
+echo.
+echo ## Rider IDE
+echo .idea/
+echo *.sln.iml
+echo.
+echo ## ASP.NET Scaffolding
+echo ScaffoldingReadMe.txt
+echo.
+echo ## NuGet packages
+echo *.nupkg
+echo packages/
+echo.
+echo ## Dotnet CLI
+echo project.lock.json
+echo project.fragment.lock.json
+echo artifacts/
+echo.
+echo ## Static analysis and build tools
+echo *.codeanalysislog.xml
+echo *.ruleset.test
+echo *.sonarqube/
+echo.
+echo ## Temporary files
+echo *.bak
+echo *.cache
+echo *.dbmdl
+echo.
+echo ## VS Code
+echo .vscode/
+echo.
+echo ## Publish folders
+echo publish/
+echo out/
