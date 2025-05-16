@@ -26,7 +26,6 @@ namespace api.Controller
         }
         
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAllStocks([FromQuery] QueryObject query){
             
          var stocks = await _stockRepository.GetAllStocksAsync(query);
@@ -50,7 +49,9 @@ namespace api.Controller
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateStock([FromBody] CreateStockRequestDto stockDto){
+        [Authorize]
+        public async Task<IActionResult> CreateStock([FromBody] CreateStockRequestDto stockDto)
+        {
             var stockModel = stockDto.ToStockFromCreateDto();
 
             await _stockRepository.CreateStockAsync(stockModel);
@@ -58,24 +59,29 @@ namespace api.Controller
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateStock([FromRoute] int id, [FromBody] UpdateStockRequestDto stockDto){
-            var stock = await _stockRepository.UpdateStockAsync(id,stockDto);
+        [Authorize]        
+        public async Task<IActionResult> UpdateStock([FromRoute] int id, [FromBody] UpdateStockRequestDto stockDto)
+        {
+            var stock = await _stockRepository.UpdateStockAsync(id, stockDto);
             if (stock == null)
             {
                 return NotFound($"Stock with ID {id} not found.");
             }
-         
-             
-             return Ok(stock.ToStockDto());
+
+
+            return Ok(stock.ToStockDto());
         }
+
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteStock([FromRoute] int id){
-           var deletedStock = await _stockRepository.DeleteStockAsync(id);
-           if (deletedStock == null)
-           {
-               return NotFound($"Stock with ID {id} not found.");
-           }
-           return NoContent();
+        [Authorize]
+        public async Task<IActionResult> DeleteStock([FromRoute] int id)
+        {
+            var deletedStock = await _stockRepository.DeleteStockAsync(id);
+            if (deletedStock == null)
+            {
+                return NotFound($"Stock with ID {id} not found.");
+            }
+            return NoContent();
         }
         
     }
