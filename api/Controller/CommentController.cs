@@ -13,12 +13,14 @@ namespace api.Controller
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IStockRepository _stockRepository;
-        public CommentController(ICommentRepository commentRepository, IStockRepository stockRepository)
+        private readonly IFMPService _fmpService;
+        public CommentController(ICommentRepository commentRepository, IStockRepository stockRepository, IFMPService fmpService)
         {
+            _fmpService = fmpService;
             _commentRepository = commentRepository;
             _stockRepository = stockRepository;
         }
-
+      
        [HttpGet]
        public async Task<IActionResult> GetAllComments()
        {
@@ -53,21 +55,26 @@ namespace api.Controller
 
         }
 
-        [HttpPost("{StockId:int}")]
+        [HttpPost("{symbol:Alpha}")]
         [Authorize]        
-        public async Task<IActionResult> CreateComment([FromRoute] int StockId, [FromBody] CreateCommentDto comment)
+        public async Task<IActionResult> CreateComment([FromRoute] string symbol, [FromBody] CreateCommentDto comment)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            if (!await _stockRepository.IsStockExists(StockId))
+            var stock = await _stockRepository.GetStockBySymbolAsync(symbol);
+            if (stock == null)
             {
-                return BadRequest($"Stock does not exist with id {StockId}");
+                stock = await _fmpService.FindBySymbolAsync(symbol);
+                if (stock == null)
+                {
+                    return NotFound($"Stock with symbol {symbol} not found.");
+                }
+                var stockModel = await _stockRepository.CreateStockAsync(stock);
             }
 
-            var commentModel = comment.ToCommentFromCreate(StockId);
+            var commentModel = comment.ToCommentFromCreate(stock.Id);
             await _commentRepository.CreateCommentAsync(commentModel);
 
             return CreatedAtAction(nameof(GetCommentById), new { id = commentModel.Id }, commentModel.ToCommentDto());
